@@ -104,9 +104,9 @@ def generate_png_files(form):
             suptitle = 'No title for ' + metric_name
 
         if form.w_low_res.isChecked():
-            scale_factor = .0833333
+            scale_factor = .0833333     # 5 arc minutes
         else:
-            scale_factor = .00833333
+            scale_factor = .00833333    # 30 arc seconds
 
         ncrt, nclr = plotting(metric_name, fdir, fdir_cb, suptitle, scale_factor)
         ncreated += ncrt
