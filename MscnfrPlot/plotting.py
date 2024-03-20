@@ -46,11 +46,13 @@ def plotting(metric, fdir, fdir_cb, suptitle, scale_factor):
     lats = [float(row[2]) for row in data]
     del(data)
 
+    scale_factor = _calc_scale_factor(lats, longs)
+
     # Find max and min of the long lat axes
     longmin = min(longs)
     latmin = min(lats)
     longlen = 1+int(round((max(longs) - longmin) / scale_factor))
-    latlen = 1+int(round((max(lats) - latmin)  / scale_factor))    
+    latlen = 1+int(round((max(lats) - latmin) / scale_factor))
 
     z_mn = min(vals)
 
@@ -129,3 +131,29 @@ def plotting(metric, fdir, fdir_cb, suptitle, scale_factor):
     pyplot.close()
     
     return plot_flag, color_scale_flag
+
+
+def _calc_scale_factor(lats, longs):
+    """
+
+    """
+    from numpy import asarray, diff
+    lat_set = sorted(set(lats))     # creates list
+    arr = asarray(lat_set)
+    diff_a = diff(arr)
+    scale_factor_lat = diff_a.mean()
+
+    ndivs_lats = round(1.0/scale_factor_lat)
+
+    scale_factor = 1 / ndivs_lats
+
+    lon_set = sorted(set(longs))    # creates list
+    arr = asarray(lon_set)
+    diff_a = diff(arr)
+    scale_factor_lon = diff_a.mean()
+
+    ndivs_lons = round(1.0 / scale_factor_lon)
+
+    scale_factor = 1/ndivs_lons
+
+    return scale_factor
