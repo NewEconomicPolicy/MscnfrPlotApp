@@ -26,9 +26,9 @@ null_val = 10000.000
 sleepTime = 3
 
 def generate_unique_list(list_inp):
-    '''
+    """
     function to get unique values
-    '''
+    """
     unique_list = []
 
     # traverse for all elements
@@ -40,11 +40,9 @@ def generate_unique_list(list_inp):
     return unique_list
 
 def generate_png_files(form):
-    '''
+    """
 
-    '''
-    func_name =  __prog__ + ' generate_png_files'
-
+    """
     suptitle_dict = {}
     year_span = '1971-1972'
     suptitle_dict['DM'] = 'Dry matter ' + year_span + ' [t/ha/y]'

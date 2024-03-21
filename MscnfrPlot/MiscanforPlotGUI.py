@@ -22,9 +22,13 @@ from initialise_mscnfr_plot import initiation, read_config_file, write_config_fi
 import os
 
 class Form(QWidget):
+    """
 
+    """
     def __init__(self, parent=None):
+        """
 
+        """
         super(Form, self).__init__(parent)
 
         initiation(self)
@@ -143,18 +147,23 @@ class Form(QWidget):
                 check_csv_files(self)
 
     def generatePNGsClicked(self):
+        """
 
-         generate_png_files(self)
+        """
+        generate_png_files(self)
 
     def exitClicked(self):
-
-        # write last path selections
+        """
+        write last path selections
+        """
         write_config_file(self)
 
         self.close()
 
 def main():
+    """
 
+    """
     app = QApplication(sys.argv)  # create QApplication object
     form = Form()     # instantiate form
     form.show()       # paint form
