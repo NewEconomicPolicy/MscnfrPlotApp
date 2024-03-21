@@ -5,7 +5,6 @@
 # Created:     05/10/2010
 # Licence:     <your licence>
 # -------------------------------------------------------------------------------
-# !/usr/bin/env python
 # -*- coding:utf-8 -*-
 
 import csv
@@ -15,7 +14,7 @@ from matplotlib.pylab import nan, array, np
 import matplotlib.pyplot as pyplot
 from os.path import join
 
-def plotting(metric, fdir, fdir_cb, suptitle, scale_factor):
+def plotting(metric, fdir, fdir_cb, suptitle):
     """
     use matplotlib plotting library to do plotting
     """
@@ -25,30 +24,15 @@ def plotting(metric, fdir, fdir_cb, suptitle, scale_factor):
     png_fname = join(fdir_cb,'cb' + metric + '.png')
     color_scale_flag = False
 
-    print('Generating plot {}'.format(fname_png))
-    fhand = open(fname, 'r')
-    reader = csv.reader(fhand, delimiter = ',', skipinitialspace = True)
-    data = []
-    data.extend(reader)
-    data_len = len(data)
-    if data_len == 0:
-        fhand.close()
+    ret_code = read_mscnfr_csv_file(fname)
+    if ret_code is None:
         return plot_flag, color_scale_flag
 
-    del(data[len(data)-1])
-    del(data[len(data)-1])
-    fhand.close()
-
-    # create lists from data
-    # ======================
-    vals = [float(row[0]) for row in data]
-    longs = [float(row[1]) for row in data]
-    lats = [float(row[2]) for row in data]
-    del(data)
-
-    scale_factor = _calc_scale_factor(lats, longs)
+    scale_factor, vals, longs, lats = ret_code
 
     # Find max and min of the long lat axes
+    # =====================================
+    print('\nGenerating plot ' + fname_png)
     longmin = min(longs)
     latmin = min(lats)
     longlen = 1+int(round((max(longs) - longmin) / scale_factor))
@@ -132,16 +116,42 @@ def plotting(metric, fdir, fdir_cb, suptitle, scale_factor):
     
     return plot_flag, color_scale_flag
 
+def read_mscnfr_csv_file(fname, quick_read = False):
+    """
+
+    """
+    print('Reading file: ' + fname)
+    with open(fname, 'r') as fhand:
+        reader = csv.reader(fhand, delimiter=',', skipinitialspace=True)
+        data = []
+        data.extend(reader)
+        if len(data) == 0:
+             return None
+
+        del (data[-2:])  # delete last two elements
+
+        # create lists from data
+        # ======================
+        longs = [float(row[1]) for row in data]
+        lats = [float(row[2]) for row in data]
+        scale_factor, resol_mess = _calc_scale_factor(lats, longs)
+
+        if quick_read:
+            return len(data), resol_mess
+
+    vals = [float(row[0]) for row in data]
+
+    return scale_factor, vals, lats, longs
 
 def _calc_scale_factor(lats, longs):
     """
-
+    somewhat overwritten
     """
     from numpy import asarray, diff
     lat_set = sorted(set(lats))     # creates list
     arr = asarray(lat_set)
     diff_a = diff(arr)
-    scale_factor_lat = diff_a.mean()
+    scale_factor_lat = diff_a.min()
 
     ndivs_lats = round(1.0/scale_factor_lat)
 
@@ -150,10 +160,18 @@ def _calc_scale_factor(lats, longs):
     lon_set = sorted(set(longs))    # creates list
     arr = asarray(lon_set)
     diff_a = diff(arr)
-    scale_factor_lon = diff_a.mean()
+    scale_factor_lon = diff_a.min()
 
     ndivs_lons = round(1.0 / scale_factor_lon)
 
     scale_factor = 1/ndivs_lons
 
-    return scale_factor
+    #
+    narc_mins = 60/ndivs_lons
+    if narc_mins >= 1:
+        resol_mess = '{} arc minutes'.format(round(narc_mins))
+    else:
+        narc_secs = narc_mins * 60
+        resol_mess = '{} arc seconds'.format(round(narc_secs))
+
+    return scale_factor, resol_mess

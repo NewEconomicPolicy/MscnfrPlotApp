@@ -13,7 +13,6 @@ __author__ = 's03mm5'
 
 from os import mkdir
 from os.path import isdir, isfile, normpath, join, split, splitext
-import os
 from glob import glob
 
 '''
@@ -21,7 +20,7 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib.pylab import figure, close
 '''
-from plotting import plotting
+from plotting import plotting, read_mscnfr_csv_file
 
 null_val = 10000.000
 sleepTime = 3
@@ -103,12 +102,7 @@ def generate_png_files(form):
         else:
             suptitle = 'No title for ' + metric_name
 
-        if form.w_low_res.isChecked():
-            scale_factor = .0833333     # 5 arc minutes
-        else:
-            scale_factor = .00833333    # 30 arc seconds
-
-        ncrt, nclr = plotting(metric_name, fdir, fdir_cb, suptitle, scale_factor)
+        ncrt, nclr = plotting(metric_name, fdir, fdir_cb, suptitle)
         ncreated += ncrt
         ncolor_files += nclr
 
@@ -117,9 +111,9 @@ def generate_png_files(form):
     return
 
 def check_csv_files(form):
+    """
 
-    func_name =  __prog__ + ' check_csv_files'
-
+    """
     csvs_dir = form.w_lbl04.text()
 
     csv_files = []
@@ -133,18 +127,18 @@ def check_csv_files(form):
     else:
         form.w_png_gen.setEnabled(False)
 
-    mess = '{} CSV files\t'.format(len(csv_files))
-    ic = 0
+    line_mess = '{} CSV files\t'.format(len(csv_files))
+    resol_mess = ''
     if len(csv_files) > 0:
-        csv_fn = csv_files[0]
-        dummy, first_file = split(csv_fn)
-        with open(csv_fn) as fh:
-            for ic, l in enumerate(fh):
-                pass
-        mess += '# of lines in first file {}: {}'.format(first_file, ic)
-        ic += 1
-    else:
-        ic = 0
+        ret_code = read_mscnfr_csv_file(csv_files[0], quick_read = True)
+        if ret_code is not None:
+            nvals, resol_mess = ret_code
+            fdir, short_fname = split(csv_files[0])
+            line_mess += ' # of lines in first file {}: {:,}'.format(short_fname, nvals)
+
+    form.w_lbl05.setText(line_mess)
+    form.w_resol.setText(resol_mess)
 
     form.csv_files = csv_files
-    return mess
+
+    return

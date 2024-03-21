@@ -75,31 +75,15 @@ class Form(QWidget):
         lbl06.setAlignment(Qt.AlignRight)
         grid.addWidget(lbl06, 6, 0)
 
-        w_low_res = QRadioButton("low")
-        helpText = 'If this option is selected, then a scale_factor of .0833333, equivalent to 5 arc minutes, is applied'
-        w_low_res.setToolTip(helpText)
-        grid.addWidget(w_low_res, 6, 1)
+        w_resol = QLabel('')
+        w_resol.setAlignment(Qt.AlignLeft)
+        helpText = 'resolution is in arc minutes or seconds'
+        w_resol.setToolTip(helpText)
+        grid.addWidget(w_resol, 6, 1)
+        self.w_resol = w_resol
 
-        w_high_res = QRadioButton("high")
-        helpText = 'If this option is selected, then a scale_factor of .00833333, equivalent to 5 arc seconds, is applied'
-        w_high_res.setToolTip(helpText)
-        grid.addWidget(w_high_res, 6, 2)
-
-        w_option_choice = QButtonGroup()
-        w_option_choice.addButton(w_low_res)
-        w_option_choice.addButton(w_high_res)
-        w_low_res.setChecked(True)
-
-        # assign check values to radio buttons
-        w_option_choice.setId(w_high_res, 2)
-        w_option_choice.setId(w_low_res, 1)
-
-        self.w_low_res  = w_low_res
-        self.w_high_res = w_high_res
-        self.w_option_choice = w_option_choice
-
-        # line 19
-        # =======
+        # user actions
+        # ============
         w_png_gen = QPushButton("Generate PNGs")
         helpText = 'Generate PNGs from CSV files'
         w_png_gen.setToolTip(helpText)
@@ -136,23 +120,27 @@ class Form(QWidget):
 
 
     def listPathsClicked(self):
+        """
 
+        """
         path_env = os.getenv('PATH')
         for dir_name in sorted(path_env.split(';')):
             print(dir_name)
         return
 
     def fetchCsvDir(self):
-
-        # We pop up the QtGui.QFileDialog. The first string in the getOpenFileName()
-        # method is the caption. The second string specifies the dialog working directory.
-        # By default, the file filter is set to All files (*)
+        """
+        We pop up the QtGui.QFileDialog. The first string in the getOpenFileName()
+        method is the caption. The second string specifies the dialog working directory.
+        By default, the file filter is set to All files (*)
+        """
         fname = self.w_lbl04.text()
         fname = QFileDialog.getExistingDirectory(self, 'Select directory', fname)
-        if fname != self.w_lbl04.text():
-            # reread new ref dir
-            self.w_lbl04.setText(fname)
-            self.w_lbl05.setText(check_csv_files(self))
+        if fname != '':
+            if fname != self.w_lbl04.text():
+                # reread new ref dir
+                self.w_lbl04.setText(fname)
+                check_csv_files(self)
 
     def generatePNGsClicked(self):
 

@@ -75,7 +75,7 @@ def read_config_file(form):
     grp = 'CsvDir'
     ref_dir = config[grp]['ref_dir']
     form.w_lbl04.setText(ref_dir)
-    form.w_lbl05.setText(check_csv_files(form))
+    check_csv_files(form)
 
     return
 
