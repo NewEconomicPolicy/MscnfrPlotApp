@@ -28,7 +28,7 @@ def plotting(metric, fdir, fdir_cb, suptitle):
     if ret_code is None:
         return plot_flag, color_scale_flag
 
-    scale_factor, vals, longs, lats = ret_code
+    scale_factor, vals, lats, longs = ret_code
 
     # Find max and min of the long lat axes
     # =====================================
