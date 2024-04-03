@@ -11,19 +11,11 @@ __prog__ = 'plot_utilities.py'
 __version__ = '0.0.1'
 __author__ = 's03mm5'
 
-from os import mkdir
+from os import mkdir, getcwd
 from os.path import isdir, isfile, normpath, join, split, splitext
 from glob import glob
 
-'''
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib.pylab import figure, close
-'''
 from plotting import plotting, read_mscnfr_csv_file
-
-null_val = 10000.000
-sleepTime = 3
 
 def generate_unique_list(list_inp):
     """
@@ -75,7 +67,12 @@ def generate_png_files(form):
     
     # make sure color scale directory exists
     # ======================================
-    fdir = form.w_lbl04.text()
+    if form.batch_mode_flag:
+        fdir = getcwd()
+        check_csv_files(form)
+    else:
+        fdir = form.w_lbl04.text()
+
     fdir_cb = join(fdir,'color_scale')
     if not isdir(fdir_cb):
         try:
@@ -112,7 +109,11 @@ def check_csv_files(form):
     """
 
     """
-    csvs_dir = form.w_lbl04.text()
+    batch_mode_flag = form.batch_mode_flag
+    if batch_mode_flag:
+        csvs_dir = getcwd()
+    else:
+        csvs_dir = form.w_lbl04.text()
 
     csv_files = []
     for fname in glob(csvs_dir + '/*.csv'):
@@ -120,22 +121,25 @@ def check_csv_files(form):
         if isfile(fname):
             csv_files.append(fname)
 
-    if len(csv_files) > 0:
-        form.w_png_gen.setEnabled(True)
-    else:
-        form.w_png_gen.setEnabled(False)
-
-    line_mess = '{} CSV files\t'.format(len(csv_files))
+    ncsv_fns = len(csv_files)
+    line_mess = '{} CSV files\t'.format(ncsv_fns)
     resol_mess = ''
-    if len(csv_files) > 0:
+    if ncsv_fns > 0:
         ret_code = read_mscnfr_csv_file(csv_files[0], quick_read = True)
         if ret_code is not None:
             nvals, resol_mess = ret_code
             fdir, short_fname = split(csv_files[0])
             line_mess += ' # of lines in first file {}: {:,}'.format(short_fname, nvals)
 
-    form.w_lbl05.setText(line_mess)
-    form.w_resol.setText(resol_mess)
+    if batch_mode_flag:
+        print(line_mess + '\t\tResolution: ' + resol_mess)
+    else:
+        form.w_lbl05.setText(line_mess)
+        form.w_resol.setText(resol_mess)
+        if ncsv_fns > 0:
+            form.w_png_gen.setEnabled(True)
+        else:
+            form.w_png_gen.setEnabled(False)
 
     form.csv_files = csv_files
 

@@ -12,6 +12,9 @@ __version__ = '0.0.1'
 __author__ = 's03mm5'
 
 import sys
+from os import getenv
+
+from time import sleep
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
@@ -19,7 +22,8 @@ from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QHBoxLayout, QVBoxLay
                                     QComboBox, QRadioButton, QButtonGroup, QPushButton, QCheckBox, QFileDialog
 from plot_utilities import check_csv_files, generate_png_files
 from initialise_mscnfr_plot import initiation, read_config_file, write_config_file
-import os
+
+sleepTime = 5
 
 class Form(QWidget):
     """
@@ -122,12 +126,11 @@ class Form(QWidget):
         # ==================================
         read_config_file(self)
 
-
     def listPathsClicked(self):
         """
 
         """
-        path_env = os.getenv('PATH')
+        path_env = getenv('PATH')
         for dir_name in sorted(path_env.split(';')):
             print(dir_name)
         return
@@ -164,10 +167,16 @@ def main():
     """
 
     """
-    app = QApplication(sys.argv)  # create QApplication object
-    form = Form()     # instantiate form
-    form.show()       # paint form
-    sys.exit(app.exec_())   # start event loop
+    if len(sys.argv) > 1:
+        app = QApplication(sys.argv)  # create QApplication object
+        form = Form()     # instantiate form
+        form.show()       # paint form
+        sys.exit(app.exec_())  # start event loop
+    else:
+        form = lambda: None     # create blank object
+        form.batch_mode_flag = True
+        generate_png_files(form)
+        sleep(sleepTime)
 
 if __name__ == '__main__':
     main()

@@ -21,26 +21,9 @@ from plot_utilities import check_csv_files
 
 def initiation(form):
     """
-
+    only called in GUI mode
     """
-    if _platform == 'win32':
-        if getenv('USERNAME') == 'mmartin':
-            root_dir = 'C:\\'
-        else:
-            root_dir = 'E:\\'
-    else:
-        pass
-
-    if getenv('USERNAME') == 'mmartin':
-        root_dir = 'C:\\AbUniv\\'
-        data_dir = 'C:\\'
-    else:
-        root_dir = 'E:\\'
-        data_dir = 'H:\\'
-    form.root_dir = root_dir
-    form.data_dir = data_dir
-    form.menuEntries = {}
-
+    form.batch_mode_flag = False
     form.fpng = join(getcwd(), 'images', 'World_small.PNG')
     form.config_file = join(getcwd(), 'mscnfr_utils_config.txt')
 
