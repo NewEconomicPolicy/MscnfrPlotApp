@@ -148,13 +148,13 @@ def _calc_scale_factor(lats, longs):
     somewhat overwritten
     """
     from numpy import asarray, diff
+
     lat_set = sorted(set(lats))     # creates list
     arr = asarray(lat_set)
     diff_a = diff(arr)
     scale_factor_lat = diff_a.min()
 
     ndivs_lats = round(1.0/scale_factor_lat)
-
     scale_factor = 1 / ndivs_lats
 
     lon_set = sorted(set(longs))    # creates list
