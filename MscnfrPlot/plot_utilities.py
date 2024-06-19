@@ -101,7 +101,7 @@ def generate_png_files(form):
         ncreated += ncrt
         ncolor_files += nclr
 
-    print('End of processing - created {} PNG files in {} and {} color scales in {}'
+    print('\nEnd of processing - created {} PNG files in: {}\n\tand {} color scales in: {}'
                                                                 .format(ncreated, fdir, ncolor_files, fdir_cb))
     return
 
