@@ -136,7 +136,7 @@ def plotting(metric, fdir, fdir_cb, suptitle):
     ax = fig.add_subplot(1, 1, 1)  # add an Axes to the figure as part of a subplot arrangement
     ax.set_axis_off()
     mask_a = np.ma.array(img_arry, mask=np.isnan(img_arry))  # Create masked array
-    cm = matplotlib.cm.jet
+    cm = matplotlib.cm.jet_r
     cm.set_over('0.75')  # set color to be used for high out-of-range values
     im = ax.imshow(mask_a, origin='lower', interpolation='nearest', cmap=cm, vmax=z_mx)
     cb = pyplot.colorbar(im, shrink=0.5)  # fraction by which to multiply the size of the colorbar
@@ -175,7 +175,7 @@ def plotting(metric, fdir, fdir_cb, suptitle):
         b[i][3] = i
         b[i][4] = i
     b = array(b)
-    cm = matplotlib.cm.jet
+    cm = matplotlib.cm.jet_r
     im = ax.imshow(b, origin='lower', cmap=cm)
     ax.set_yticks([0, 24, 49, 74, 99])
     zincr = (z_mx - z_mn) / 4
