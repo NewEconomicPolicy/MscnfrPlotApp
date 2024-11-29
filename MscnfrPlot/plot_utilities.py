@@ -36,7 +36,7 @@ def generate_png_files(form):
 
     """
     suptitle_dict = {}
-    year_span = '1971-1972'
+    year_span = ''
     suptitle_dict['DM'] = 'Dry matter ' + year_span + ' [t/ha/y]'
     suptitle_dict['DM_sd'] = 'Dry matter ' + year_span + ' standard deviation [t/ha/y]'
     suptitle_dict['DM_pm'] = 'Dry matter peak mass ' + year_span + ' [t/ha/y]'
